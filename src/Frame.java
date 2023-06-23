@@ -6,11 +6,21 @@ public class Frame {
     public static void main(String[] args) {
 
 
-        JFrame frme =new JFrame();
+        JFrame frame =new JFrame();
+        JPanel panel=new JPanel();
 
-        frme.setVisible(true);
-        frme.setPreferredSize(new Dimension(840,840/12*9));
-        System.out.println("hi");
+        frame.add(panel);
+
+        panel.add(new JLabel("first JLabel"));
+
+        frame.setResizable(false);
+        frame.setVisible(true);
+        frame.setPreferredSize(new Dimension(840,840/12*9));
+        frame.setSize(840,840/12*9);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
 
     }
 }
