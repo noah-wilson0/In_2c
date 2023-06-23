@@ -10,7 +10,7 @@ public class Frame {
 
         frme.setVisible(true);
         frme.setPreferredSize(new Dimension(840,840/12*9));
-
+        System.out.println("hi");
 
     }
 }
