@@ -17,7 +17,8 @@ public class ConnectDB {
     // 접속할 데이터베이스의 URL, 아이디, 패스워드 설정
     String url = null;			// "jdbc:mysql://localhost:3306/[데이터베이스 이름]?serverTimezone=UTC"
     String mysql_id = "root";	// MYSQL root 아이디
-    String mysql_pw = "495108";	// MYSQL 설정 시 입력한 패스워드
+    //자신의 비밀번호 적기
+    String mysql_pw = "";	// MYSQL 설정 시 입력한 패스워드
 
     // 입력된 아이디가 DB에 등록되어 있는지 검사하는 메소드
     public boolean checkID(String id) {
