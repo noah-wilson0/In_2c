@@ -1,7 +1,7 @@
 /*
- * ¼³¸í : µ¥ÀÌÅÍº£ÀÌ½º¿¡ Á¢±ÙÇÏ´Â Å¬·¡½º
+ * ì„¤ëª… : ë°ì´í„°ë² ì´ìŠ¤ì— ì ‘ê·¼í•˜ëŠ” í´ë˜ìŠ¤
  * 
- * °¢ Å¬·¡½º¿¡¼­ µ¥ÀÌÅÍº£ÀÌ½º Á¢±ÙÀÌ ÇÊ¿äÇÒ ¶§, ÀÌ Å¬·¡½º·ÎºÎÅÍ °´Ã¼¸¦ »ı¼ºÇÏ¿© ÇÊ¿äÇÑ ¸Ş¼Òµå¸¦ È£ÃâÇÔ.
+ * ê° í´ë˜ìŠ¤ì—ì„œ ë°ì´í„°ë² ì´ìŠ¤ ì ‘ê·¼ì´ í•„ìš”í•  ë•Œ, ì´ í´ë˜ìŠ¤ë¡œë¶€í„° ê°ì²´ë¥¼ ìƒì„±í•˜ì—¬ í•„ìš”í•œ ë©”ì†Œë“œë¥¼ í˜¸ì¶œí•¨.
  */
 
 import java.sql.*;
@@ -9,113 +9,113 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConnectDB {
-    // Å¬·¡½º °´Ã¼ º¯¼ö ¼±¾ğ
-    Connection conn;	// DB ¿¬°á¿¡ »ç¿ëµÇ´Â °´Ã¼ º¯¼ö
-    Statement stmt;		// SQL ¸í·É¹® ½ÇÇà¿¡ »ç¿ëµÇ´Â °´Ã¼ º¯¼ö
-    ResultSet result;	// SQL ¸í·É¹® ½ÇÇà°á°ú¸¦ ¹Ş´Â °´Ã¼ º¯¼ö
+    // í´ë˜ìŠ¤ ê°ì²´ ë³€ìˆ˜ ì„ ì–¸
+    Connection conn;	// DB ì—°ê²°ì— ì‚¬ìš©ë˜ëŠ” ê°ì²´ ë³€ìˆ˜
+    Statement stmt;		// SQL ëª…ë ¹ë¬¸ ì‹¤í–‰ì— ì‚¬ìš©ë˜ëŠ” ê°ì²´ ë³€ìˆ˜
+    ResultSet result;	// SQL ëª…ë ¹ë¬¸ ì‹¤í–‰ê²°ê³¼ë¥¼ ë°›ëŠ” ê°ì²´ ë³€ìˆ˜
 
-    // Á¢¼ÓÇÒ µ¥ÀÌÅÍº£ÀÌ½ºÀÇ URL, ¾ÆÀÌµğ, ÆĞ½º¿öµå ¼³Á¤
-    String url = null;			// "jdbc:mysql://localhost:3306/[µ¥ÀÌÅÍº£ÀÌ½º ÀÌ¸§]?serverTimezone=UTC"
-    String mysql_id = "root";	// MYSQL root ¾ÆÀÌµğ
-    String mysql_pw = "1234";	// MYSQL ¼³Á¤ ½Ã ÀÔ·ÂÇÑ ÆĞ½º¿öµå
+    // ì ‘ì†í•  ë°ì´í„°ë² ì´ìŠ¤ì˜ URL, ì•„ì´ë””, íŒ¨ìŠ¤ì›Œë“œ ì„¤ì •
+    String url = null;			// "jdbc:mysql://localhost:3306/[ë°ì´í„°ë² ì´ìŠ¤ ì´ë¦„]?serverTimezone=UTC"
+    String mysql_id = "root";	// MYSQL root ì•„ì´ë””
+    String mysql_pw = "";	// MYSQL ì„¤ì • ì‹œ ì…ë ¥í•œ íŒ¨ìŠ¤ì›Œë“œ
 
-    // ÀÔ·ÂµÈ ¾ÆÀÌµğ°¡ DB¿¡ µî·ÏµÇ¾î ÀÖ´ÂÁö °Ë»çÇÏ´Â ¸Ş¼Òµå
+    // ì…ë ¥ëœ ì•„ì´ë””ê°€ DBì— ë“±ë¡ë˜ì–´ ìˆëŠ”ì§€ ê²€ì‚¬í•˜ëŠ” ë©”ì†Œë“œ
     public boolean checkID(String id) {
-    	// ¸®ÅÏÇÒ º¯¼ö »ı¼º
+    	// ë¦¬í„´í•  ë³€ìˆ˜ ìƒì„±
     	boolean check = false;
     	
-    	// µ¥ÀÌÅÍº£ÀÌ½º Á¢±Ù
+    	// ë°ì´í„°ë² ì´ìŠ¤ ì ‘ê·¼
         try {
-            // DB ¿¬°á
-            url = "jdbc:mysql://localhost:3306/member?serverTimezone=UTC";	// 'member' DB·Î Á¢¼ÓÇÏ´Â URL
-            Class.forName("com.mysql.cj.jdbc.Driver");						// JDBCµå¶óÀÌ¹ö ·Îµå
-            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);	// µ¥ÀÌÅÍº£ÀÌ½º¿Í ¿¬°á
-            System.out.println("DB ¿¬°á ¿Ï·á: checkID");						// DB ¿¬°á ¼º°ø ¿©ºÎ¸¦ ÄÜ¼Ö Ã¢¿¡ Ãâ·Â
+            // DB ì—°ê²°
+            url = "jdbc:mysql://localhost:3306/member?serverTimezone=UTC";	// 'member' DBë¡œ ì ‘ì†í•˜ëŠ” URL
+            Class.forName("com.mysql.cj.jdbc.Driver");						// JDBCë“œë¼ì´ë²„ ë¡œë“œ
+            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);	// ë°ì´í„°ë² ì´ìŠ¤ì™€ ì—°ê²°
+            System.out.println("DB ì—°ê²° ì™„ë£Œ: checkID");						// DB ì—°ê²° ì„±ê³µ ì—¬ë¶€ë¥¼ ì½˜ì†” ì°½ì— ì¶œë ¥
 
-            // SQL ¸í·É¹®À» °¡Áö´Â º¯¼ö »ı¼º
+            // SQL ëª…ë ¹ë¬¸ì„ ê°€ì§€ëŠ” ë³€ìˆ˜ ìƒì„±
             String sql = "select exists(select * from user_list where id = '" + id + "')";
 
-            // Statement °´Ã¼ »ı¼º
+            // Statement ê°ì²´ ìƒì„±
             stmt = conn.createStatement();
 
-            // SQL ¸í·É¹® ½ÇÇà ¹× °á°ú °ª Ã³¸®
-            result = stmt.executeQuery(sql);	// ÀÔ·ÂµÈ ID°¡ 'user_list' Table¿¡ ÀÖ´ÂÁö È®ÀÎ(ÀÖÀ¸¸é 1, ¾øÀ¸¸é 0 ¹İÈ¯)
+            // SQL ëª…ë ¹ë¬¸ ì‹¤í–‰ ë° ê²°ê³¼ ê°’ ì²˜ë¦¬
+            result = stmt.executeQuery(sql);	// ì…ë ¥ëœ IDê°€ 'user_list' Tableì— ìˆëŠ”ì§€ í™•ì¸(ìˆìœ¼ë©´ 1, ì—†ìœ¼ë©´ 0 ë°˜í™˜)
             result.next();
             int check_code = result.getInt(1);
-            if (check_code == 1) {				// ÀÔ·ÂµÈ ID°¡ Table¿¡ ÀÖÀ¸¸é..
-            	check = true;						// check¸¦ true·Î ÁöÁ¤
+            if (check_code == 1) {				// ì…ë ¥ëœ IDê°€ Tableì— ìˆìœ¼ë©´..
+            	check = true;						// checkë¥¼ trueë¡œ ì§€ì •
             }
 
-            // ¿¬°á ÇØÁ¦(»ç¿ëµÈ ÀÚ¿øÀ» ¹İÈ¯)
+            // ì—°ê²° í•´ì œ(ì‚¬ìš©ëœ ìì›ì„ ë°˜í™˜)
             result.close();
             stmt.close();
             conn.close();
         }
         catch (ClassNotFoundException e) {
-            System.out.println("JDBC µå¶óÀÌ¹ö ·Îµå ¿¡·¯");
+            System.out.println("JDBC ë“œë¼ì´ë²„ ë¡œë“œ ì—ëŸ¬");
         }
         catch (SQLException e) {
-            System.out.println("DB ¿¬°á ¿À·ù: checkID");
+            System.out.println("DB ì—°ê²° ì˜¤ë¥˜: checkID");
         }
         
-        // °á°ú °ª ¸®ÅÏ
+        // ê²°ê³¼ ê°’ ë¦¬í„´
         return check;
     }
 
-    // ÀÔ·ÂµÈ ÆĞ½º¿öµå°¡ ÇØ´ç IDÀÇ password¿Í ÀÏÄ¡ÇÏ´ÂÁö °Ë»çÇÏ´Â ¸Ş¼Òµå
+    // ì…ë ¥ëœ íŒ¨ìŠ¤ì›Œë“œê°€ í•´ë‹¹ IDì˜ passwordì™€ ì¼ì¹˜í•˜ëŠ”ì§€ ê²€ì‚¬í•˜ëŠ” ë©”ì†Œë“œ
     public boolean checkPW(String id, String pw) {
-    	// ¸®ÅÏÇÒ º¯¼ö »ı¼º
+    	// ë¦¬í„´í•  ë³€ìˆ˜ ìƒì„±
     	boolean check = false;
     	
-    	// µ¥ÀÌÅÍº£ÀÌ½º Á¢±Ù
+    	// ë°ì´í„°ë² ì´ìŠ¤ ì ‘ê·¼
         try {
-            // DB ¿¬°á
-            url = "jdbc:mysql://localhost:3306/member?serverTimezone=UTC";	// 'member' DB·Î Á¢¼ÓÇÏ´Â URL
-            Class.forName("com.mysql.cj.jdbc.Driver");						// JDBCµå¶óÀÌ¹ö ·Îµå
-            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);	// µ¥ÀÌÅÍº£ÀÌ½º¿Í ¿¬°á
-            System.out.println("DB ¿¬°á ¿Ï·á: checkPW");						// DB ¿¬°á ¼º°ø ¿©ºÎ¸¦ ÄÜ¼Ö Ã¢¿¡ Ãâ·Â
+            // DB ì—°ê²°
+            url = "jdbc:mysql://localhost:3306/member?serverTimezone=UTC";	// 'member' DBë¡œ ì ‘ì†í•˜ëŠ” URL
+            Class.forName("com.mysql.cj.jdbc.Driver");						// JDBCë“œë¼ì´ë²„ ë¡œë“œ
+            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);	// ë°ì´í„°ë² ì´ìŠ¤ì™€ ì—°ê²°
+            System.out.println("DB ì—°ê²° ì™„ë£Œ: checkPW");						// DB ì—°ê²° ì„±ê³µ ì—¬ë¶€ë¥¼ ì½˜ì†” ì°½ì— ì¶œë ¥
 
-            // SQL ¸í·É¹®À» °¡Áö´Â º¯¼ö »ı¼º
+            // SQL ëª…ë ¹ë¬¸ì„ ê°€ì§€ëŠ” ë³€ìˆ˜ ìƒì„±
             String sql = "select password from user_list where id = '" + id + "'";
 
-            // Statement °´Ã¼ »ı¼º
+            // Statement ê°ì²´ ìƒì„±
             stmt = conn.createStatement();
 
-            // SQL ¸í·É¹® ½ÇÇà ¹× °á°ú °ª Ã³¸®
-            result = stmt.executeQuery(sql);		// ÇØ´ç IDÀÇ password¸¦ Á¶È¸
+            // SQL ëª…ë ¹ë¬¸ ì‹¤í–‰ ë° ê²°ê³¼ ê°’ ì²˜ë¦¬
+            result = stmt.executeQuery(sql);		// í•´ë‹¹ IDì˜ passwordë¥¼ ì¡°íšŒ
             result.next();
             String password = result.getString(1);
-            if (pw.equals(password)) {				// ÀÔ·ÂµÈ ÆĞ½º¿öµå°¡ ÇØ´ç IDÀÇ password¿Í ÀÏÄ¡ÇÏ¸é..
-                check = true;							// check¸¦ true·Î ÁöÁ¤
+            if (pw.equals(password)) {				// ì…ë ¥ëœ íŒ¨ìŠ¤ì›Œë“œê°€ í•´ë‹¹ IDì˜ passwordì™€ ì¼ì¹˜í•˜ë©´..
+                check = true;							// checkë¥¼ trueë¡œ ì§€ì •
             }
             
-            // ¿¬°á ÇØÁ¦(»ç¿ëµÈ ÀÚ¿øÀ» ¹İÈ¯)
+            // ì—°ê²° í•´ì œ(ì‚¬ìš©ëœ ìì›ì„ ë°˜í™˜)
             result.close();
             stmt.close();
             conn.close();
         }
         catch (ClassNotFoundException e) {
-            System.out.println("JDBC µå¶óÀÌ¹ö ·Îµå ¿¡·¯");
+            System.out.println("JDBC ë“œë¼ì´ë²„ ë¡œë“œ ì—ëŸ¬");
         }
         catch (SQLException e) {
-            System.out.println("DB ¿¬°á ¿À·ù: checkPW");
+            System.out.println("DB ì—°ê²° ì˜¤ë¥˜: checkPW");
         }
         
-        // °á°ú °ª ¸®ÅÏ
+        // ê²°ê³¼ ê°’ ë¦¬í„´
         return check;
     }
 
-    // »õ·Î¿î È¸¿øÀ» Ãß°¡ÇÏ´Â ¸Ş¼Òµå
+    // ìƒˆë¡œìš´ íšŒì›ì„ ì¶”ê°€í•˜ëŠ” ë©”ì†Œë“œ
     public void addMember(String id, String pw, String name, String gender, String email) {
-    	// µ¥ÀÌÅÍº£ÀÌ½º Á¢±Ù
+    	// ë°ì´í„°ë² ì´ìŠ¤ ì ‘ê·¼
         try {
-            // DB ¿¬°á
-            url = "jdbc:mysql://localhost:3306/member?serverTimezone=UTC";	// 'member' DB·Î Á¢¼ÓÇÏ´Â URL
-            Class.forName("com.mysql.cj.jdbc.Driver");						// JDBCµå¶óÀÌ¹ö ·Îµå
-            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);	// µ¥ÀÌÅÍº£ÀÌ½º¿Í ¿¬°á
-            System.out.println("DB ¿¬°á ¿Ï·á: addMember");						// DB ¿¬°á ¼º°ø ¿©ºÎ¸¦ ÄÜ¼Ö Ã¢¿¡ Ãâ·Â
+            // DB ì—°ê²°
+            url = "jdbc:mysql://localhost:3306/member?serverTimezone=UTC";	// 'member' DBë¡œ ì ‘ì†í•˜ëŠ” URL
+            Class.forName("com.mysql.cj.jdbc.Driver");						// JDBCë“œë¼ì´ë²„ ë¡œë“œ
+            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);	// ë°ì´í„°ë² ì´ìŠ¤ì™€ ì—°ê²°
+            System.out.println("DB ì—°ê²° ì™„ë£Œ: addMember");						// DB ì—°ê²° ì„±ê³µ ì—¬ë¶€ë¥¼ ì½˜ì†” ì°½ì— ì¶œë ¥
 
-            // SQL ¸í·É¹®À» °¡Áö´Â º¯¼ö »ı¼º
+            // SQL ëª…ë ¹ë¬¸ì„ ê°€ì§€ëŠ” ë³€ìˆ˜ ìƒì„±
             String sql1 = "insert into user_list values('" + id + "', '" + pw + "', '" + name + "', '"
                     	  + gender + "', '" + email + "')";
             String sql2 = "create database " + id + "_db";
@@ -124,607 +124,607 @@ public class ConnectDB {
                     	  + "id int NOT NULL AUTO_INCREMENT PRIMARY KEY,"
                     	  + "name varchar(30) NOT NULL)";
 
-            // Statement °´Ã¼ »ı¼º
+            // Statement ê°ì²´ ìƒì„±
             stmt = conn.createStatement();
 
-            // SQL ¸í·É¹® ½ÇÇà
-            stmt.executeUpdate(sql1);	// 'user_list' Table¿¡ »õ·Î¿î È¸¿øÁ¤º¸ »ğÀÔ
-            stmt.executeUpdate(sql2);	// È¸¿ø°¡ÀÔ ½Ã¿¡ ÀÔ·ÂÇÑ ¾ÆÀÌµğ·Î È¸¿ø °³ÀÎ DB »ı¼º
-            stmt.executeUpdate(sql3);	// È¸¿ø °³ÀÎ DB·Î ÀÌµ¿
-            stmt.executeUpdate(sql4);	// È¸¿ø °³ÀÎ DB¿¡ 'note_list' Table »ı¼º
-            System.out.println("À¯Àú '" + id + "': È¸¿ø°¡ÀÔ ¿Ï·á");
+            // SQL ëª…ë ¹ë¬¸ ì‹¤í–‰
+            stmt.executeUpdate(sql1);	// 'user_list' Tableì— ìƒˆë¡œìš´ íšŒì›ì •ë³´ ì‚½ì…
+            stmt.executeUpdate(sql2);	// íšŒì›ê°€ì… ì‹œì— ì…ë ¥í•œ ì•„ì´ë””ë¡œ íšŒì› ê°œì¸ DB ìƒì„±
+            stmt.executeUpdate(sql3);	// íšŒì› ê°œì¸ DBë¡œ ì´ë™
+            stmt.executeUpdate(sql4);	// íšŒì› ê°œì¸ DBì— 'note_list' Table ìƒì„±
+            System.out.println("ìœ ì € '" + id + "': íšŒì›ê°€ì… ì™„ë£Œ");
 
-            // ¿¬°á ÇØÁ¦(»ç¿ëµÈ ÀÚ¿øÀ» ¹İÈ¯)
+            // ì—°ê²° í•´ì œ(ì‚¬ìš©ëœ ìì›ì„ ë°˜í™˜)
             stmt.close();
             conn.close();
         }
         catch (ClassNotFoundException e) {
-            System.out.println("JDBC µå¶óÀÌ¹ö ·Îµå ¿¡·¯");
+            System.out.println("JDBC ë“œë¼ì´ë²„ ë¡œë“œ ì—ëŸ¬");
         }
         catch (SQLException e) {
-            System.out.println("DB ¿¬°á ¿À·ù: addMember");
+            System.out.println("DB ì—°ê²° ì˜¤ë¥˜: addMember");
         }
     }
     
-    // È¸¿øÁ¤º¸¸¦ Á¶È¸ÇÏ´Â ¸Ş¼Òµå
+    // íšŒì›ì •ë³´ë¥¼ ì¡°íšŒí•˜ëŠ” ë©”ì†Œë“œ
     public String lookProfile(String id) {
-    	// ¸®ÅÏÇÒ º¯¼ö »ı¼º
+    	// ë¦¬í„´í•  ë³€ìˆ˜ ìƒì„±
     	String profile = null;
     	
-    	// µ¥ÀÌÅÍº£ÀÌ½º Á¢±Ù
+    	// ë°ì´í„°ë² ì´ìŠ¤ ì ‘ê·¼
         try {
-            // DB ¿¬°á
-            url = "jdbc:mysql://localhost:3306/member?serverTimezone=UTC";	// 'member' DB·Î Á¢¼ÓÇÏ´Â URL
-            Class.forName("com.mysql.cj.jdbc.Driver");						// JDBCµå¶óÀÌ¹ö ·Îµå
-            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);	// µ¥ÀÌÅÍº£ÀÌ½º¿Í ¿¬°á
-            System.out.println("DB ¿¬°á ¿Ï·á: lookProfile");					// DB ¿¬°á ¼º°ø ¿©ºÎ¸¦ ÄÜ¼Ö Ã¢¿¡ Ãâ·Â
+            // DB ì—°ê²°
+            url = "jdbc:mysql://localhost:3306/member?serverTimezone=UTC";	// 'member' DBë¡œ ì ‘ì†í•˜ëŠ” URL
+            Class.forName("com.mysql.cj.jdbc.Driver");						// JDBCë“œë¼ì´ë²„ ë¡œë“œ
+            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);	// ë°ì´í„°ë² ì´ìŠ¤ì™€ ì—°ê²°
+            System.out.println("DB ì—°ê²° ì™„ë£Œ: lookProfile");					// DB ì—°ê²° ì„±ê³µ ì—¬ë¶€ë¥¼ ì½˜ì†” ì°½ì— ì¶œë ¥
 
-            // SQL ¸í·É¹®À» °¡Áö´Â º¯¼ö »ı¼º
+            // SQL ëª…ë ¹ë¬¸ì„ ê°€ì§€ëŠ” ë³€ìˆ˜ ìƒì„±
             String sql = "select * from user_list where id = '" + id + "'";
 
-            // Statement °´Ã¼ »ı¼º
+            // Statement ê°ì²´ ìƒì„±
             stmt = conn.createStatement();
 
-            // SQL ¸í·É¹® ½ÇÇà ¹× °á°ú °ª Ã³¸®
-            result = stmt.executeQuery(sql);						// ·Î±×ÀÎÇÑ ID¿¡ ÇØ´çÇÏ´Â È¸¿øÁ¤º¸¸¦ Á¶È¸
+            // SQL ëª…ë ¹ë¬¸ ì‹¤í–‰ ë° ê²°ê³¼ ê°’ ì²˜ë¦¬
+            result = stmt.executeQuery(sql);						// ë¡œê·¸ì¸í•œ IDì— í•´ë‹¹í•˜ëŠ” íšŒì›ì •ë³´ë¥¼ ì¡°íšŒ
             result.next();
-            profile = result.getString("id");						// °¢ ÄÃ·³µéÀ» '/'ÅäÅ«À¸·Î ±¸ºĞÇÏ¸ç profile¿¡ ÀúÀå
+            profile = result.getString("id");						// ê° ì»¬ëŸ¼ë“¤ì„ '/'í† í°ìœ¼ë¡œ êµ¬ë¶„í•˜ë©° profileì— ì €ì¥
             profile = profile + "/" + result.getString("name");
             profile = profile + "/" + result.getString("gender");
             profile = profile + "/" + result.getString("email");
 
-            // ¿¬°á ÇØÁ¦(»ç¿ëµÈ ÀÚ¿øÀ» ¹İÈ¯)
+            // ì—°ê²° í•´ì œ(ì‚¬ìš©ëœ ìì›ì„ ë°˜í™˜)
             result.close();
             stmt.close();
             conn.close();
         }
         catch (ClassNotFoundException e) {
-            System.out.println("JDBC µå¶óÀÌ¹ö ·Îµå ¿¡·¯");
+            System.out.println("JDBC ë“œë¼ì´ë²„ ë¡œë“œ ì—ëŸ¬");
         }
         catch (SQLException e) {
-            System.out.println("DB ¿¬°á ¿À·ù: lookProfile");
+            System.out.println("DB ì—°ê²° ì˜¤ë¥˜: lookProfile");
         }
         
-        // °á°ú °ª ¸®ÅÏ
+        // ê²°ê³¼ ê°’ ë¦¬í„´
         return profile;
     }
     
-    // »ç¿ëÀÚÀÇ ÀÌ¸§À» Á¶È¸ÇÏ´Â ¸Ş¼Òµå
+    // ì‚¬ìš©ìì˜ ì´ë¦„ì„ ì¡°íšŒí•˜ëŠ” ë©”ì†Œë“œ
     public String selectName(String id) {
-    	// ¸®ÅÏÇÒ º¯¼ö »ı¼º
+    	// ë¦¬í„´í•  ë³€ìˆ˜ ìƒì„±
     	String name = null;
     	
-    	// µ¥ÀÌÅÍº£ÀÌ½º Á¢±Ù
+    	// ë°ì´í„°ë² ì´ìŠ¤ ì ‘ê·¼
         try {
-        	// DB ¿¬°á
-            url = "jdbc:mysql://localhost:3306/member?serverTimezone=UTC";	// 'member' DB·Î Á¢¼ÓÇÏ´Â URL
-            Class.forName("com.mysql.cj.jdbc.Driver");						// JDBCµå¶óÀÌ¹ö ·Îµå
-            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);	// µ¥ÀÌÅÍº£ÀÌ½º¿Í ¿¬°á
-            System.out.println("DB ¿¬°á ¿Ï·á: selectName");					// DB ¿¬°á ¼º°ø ¿©ºÎ¸¦ ÄÜ¼Ö Ã¢¿¡ Ãâ·Â
+        	// DB ì—°ê²°
+            url = "jdbc:mysql://localhost:3306/member?serverTimezone=UTC";	// 'member' DBë¡œ ì ‘ì†í•˜ëŠ” URL
+            Class.forName("com.mysql.cj.jdbc.Driver");						// JDBCë“œë¼ì´ë²„ ë¡œë“œ
+            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);	// ë°ì´í„°ë² ì´ìŠ¤ì™€ ì—°ê²°
+            System.out.println("DB ì—°ê²° ì™„ë£Œ: selectName");					// DB ì—°ê²° ì„±ê³µ ì—¬ë¶€ë¥¼ ì½˜ì†” ì°½ì— ì¶œë ¥
             
-            // SQL ¸í·É¹®À» °¡Áö´Â º¯¼ö »ı¼º
+            // SQL ëª…ë ¹ë¬¸ì„ ê°€ì§€ëŠ” ë³€ìˆ˜ ìƒì„±
             String sql = "SELECT name FROM user_list WHERE id = '" + id + "'";
 
-            // Statement °´Ã¼ »ı¼º
+            // Statement ê°ì²´ ìƒì„±
             stmt = conn.createStatement();
 
-            // SQL ¸í·É¹® ½ÇÇà ¹× °á°ú °ª Ã³¸®
-            result = stmt.executeQuery(sql);	// 'user_list' Table¿¡¼­, ·Î±×ÀÎÇÑ ID¿¡ ÇØ´çÇÏ´Â 'name' ¿­ÀÇ °ªÀ» ¾òÀ½
+            // SQL ëª…ë ¹ë¬¸ ì‹¤í–‰ ë° ê²°ê³¼ ê°’ ì²˜ë¦¬
+            result = stmt.executeQuery(sql);	// 'user_list' Tableì—ì„œ, ë¡œê·¸ì¸í•œ IDì— í•´ë‹¹í•˜ëŠ” 'name' ì—´ì˜ ê°’ì„ ì–»ìŒ
             result.next();
             name = result.getString(1);
 
-            // ¿¬°á ÇØÁ¦
+            // ì—°ê²° í•´ì œ
             result.close();
             stmt.close();
             conn.close();
         }
         catch (ClassNotFoundException e) {
-            System.out.println("JDBC µå¶óÀÌ¹ö ·Îµå ¿¡·¯");
+            System.out.println("JDBC ë“œë¼ì´ë²„ ë¡œë“œ ì—ëŸ¬");
         }
         catch (SQLException e) {
-            System.out.println("DB ¿¬°á ¿À·ù: selectName");
+            System.out.println("DB ì—°ê²° ì˜¤ë¥˜: selectName");
         }
         
-        // °á°ú °ª ¸®ÅÏ
+        // ê²°ê³¼ ê°’ ë¦¬í„´
         return name;
     }
 
-    // È¸¿øÁ¤º¸¸¦ ¼öÁ¤ÇÏ´Â ¸Ş¼Òµå
+    // íšŒì›ì •ë³´ë¥¼ ìˆ˜ì •í•˜ëŠ” ë©”ì†Œë“œ
     public void editProfile(String id, String name, String gender, String email) {
-    	// µ¥ÀÌÅÍº£ÀÌ½º Á¢±Ù
+    	// ë°ì´í„°ë² ì´ìŠ¤ ì ‘ê·¼
         try {
-            // DB ¿¬°á
-            url = "jdbc:mysql://localhost:3306/member?serverTimezone=UTC";	// 'member' DB·Î Á¢¼ÓÇÏ´Â URL
-            Class.forName("com.mysql.cj.jdbc.Driver");						// JDBCµå¶óÀÌ¹ö ·Îµå
-            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);	// µ¥ÀÌÅÍº£ÀÌ½º¿Í ¿¬°á
-            System.out.println("DB ¿¬°á ¿Ï·á: editProfile");					// DB ¿¬°á ¼º°ø ¿©ºÎ¸¦ ÄÜ¼Ö Ã¢¿¡ Ãâ·Â
+            // DB ì—°ê²°
+            url = "jdbc:mysql://localhost:3306/member?serverTimezone=UTC";	// 'member' DBë¡œ ì ‘ì†í•˜ëŠ” URL
+            Class.forName("com.mysql.cj.jdbc.Driver");						// JDBCë“œë¼ì´ë²„ ë¡œë“œ
+            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);	// ë°ì´í„°ë² ì´ìŠ¤ì™€ ì—°ê²°
+            System.out.println("DB ì—°ê²° ì™„ë£Œ: editProfile");					// DB ì—°ê²° ì„±ê³µ ì—¬ë¶€ë¥¼ ì½˜ì†” ì°½ì— ì¶œë ¥
 
-            // SQL ¸í·É¹®À» °¡Áö´Â º¯¼ö »ı¼º
+            // SQL ëª…ë ¹ë¬¸ì„ ê°€ì§€ëŠ” ë³€ìˆ˜ ìƒì„±
             String sql = "update user_list set name = '" + name + "', gender = '" + gender
             			 + "', email = '" + email + "' where id = '" + id + "'";
 
-            // Statement °´Ã¼ »ı¼º
+            // Statement ê°ì²´ ìƒì„±
             stmt = conn.createStatement();
             
-            // SQL ¸í·É¹® ½ÇÇà
-            stmt.executeUpdate(sql);	// ·Î±×ÀÎÇÑ ID¿¡ ÇØ´çÇÏ´Â È¸¿øÁ¤º¸¸¦ ¼öÁ¤
+            // SQL ëª…ë ¹ë¬¸ ì‹¤í–‰
+            stmt.executeUpdate(sql);	// ë¡œê·¸ì¸í•œ IDì— í•´ë‹¹í•˜ëŠ” íšŒì›ì •ë³´ë¥¼ ìˆ˜ì •
 
-            // ¿¬°á ÇØÁ¦(»ç¿ëµÈ ÀÚ¿øÀ» ¹İÈ¯)
+            // ì—°ê²° í•´ì œ(ì‚¬ìš©ëœ ìì›ì„ ë°˜í™˜)
             stmt.close();
             conn.close();
         }
         catch (ClassNotFoundException e) {
-            System.out.println("JDBC µå¶óÀÌ¹ö ·Îµå ¿¡·¯");
+            System.out.println("JDBC ë“œë¼ì´ë²„ ë¡œë“œ ì—ëŸ¬");
         }
         catch (SQLException e) {
-            System.out.println("DB ¿¬°á ¿À·ù: editProfile");
+            System.out.println("DB ì—°ê²° ì˜¤ë¥˜: editProfile");
         }
     }
     
-    // ºñ¹Ğ¹øÈ£¸¦ º¯°æÇÏ´Â ¸Ş¼Òµå
+    // ë¹„ë°€ë²ˆí˜¸ë¥¼ ë³€ê²½í•˜ëŠ” ë©”ì†Œë“œ
     public void editPassword(String id, String pw) {
-    	// µ¥ÀÌÅÍº£ÀÌ½º Á¢±Ù
+    	// ë°ì´í„°ë² ì´ìŠ¤ ì ‘ê·¼
         try {
-            // DB ¿¬°á
-            url = "jdbc:mysql://localhost:3306/member?serverTimezone=UTC";	// 'member' DB·Î Á¢¼ÓÇÏ´Â URL
-            Class.forName("com.mysql.cj.jdbc.Driver");						// JDBCµå¶óÀÌ¹ö ·Îµå
-            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);	// µ¥ÀÌÅÍº£ÀÌ½º¿Í ¿¬°á
-            System.out.println("DB ¿¬°á ¿Ï·á: editPassword");					// DB ¿¬°á ¼º°ø ¿©ºÎ¸¦ ÄÜ¼Ö Ã¢¿¡ Ãâ·Â
+            // DB ì—°ê²°
+            url = "jdbc:mysql://localhost:3306/member?serverTimezone=UTC";	// 'member' DBë¡œ ì ‘ì†í•˜ëŠ” URL
+            Class.forName("com.mysql.cj.jdbc.Driver");						// JDBCë“œë¼ì´ë²„ ë¡œë“œ
+            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);	// ë°ì´í„°ë² ì´ìŠ¤ì™€ ì—°ê²°
+            System.out.println("DB ì—°ê²° ì™„ë£Œ: editPassword");					// DB ì—°ê²° ì„±ê³µ ì—¬ë¶€ë¥¼ ì½˜ì†” ì°½ì— ì¶œë ¥
 
-            // SQL ¸í·É¹®À» °¡Áö´Â º¯¼ö »ı¼º
+            // SQL ëª…ë ¹ë¬¸ì„ ê°€ì§€ëŠ” ë³€ìˆ˜ ìƒì„±
             String sql = "update user_list set password = '" + pw + "' where id = '" + id + "'";
 
-            // Statement °´Ã¼ »ı¼º
+            // Statement ê°ì²´ ìƒì„±
             stmt = conn.createStatement();
 
-            // SQL ¸í·É¹® ½ÇÇà
-            stmt.executeUpdate(sql);	// ·Î±×ÀÎÇÑ ID¿¡ ÇØ´çÇÏ´Â ºñ¹Ğ¹øÈ£¸¦ º¯°æ
+            // SQL ëª…ë ¹ë¬¸ ì‹¤í–‰
+            stmt.executeUpdate(sql);	// ë¡œê·¸ì¸í•œ IDì— í•´ë‹¹í•˜ëŠ” ë¹„ë°€ë²ˆí˜¸ë¥¼ ë³€ê²½
 
-            // ¿¬°á ÇØÁ¦(»ç¿ëµÈ ÀÚ¿øÀ» ¹İÈ¯)
+            // ì—°ê²° í•´ì œ(ì‚¬ìš©ëœ ìì›ì„ ë°˜í™˜)
             stmt.close();
             conn.close();
         }
         catch (ClassNotFoundException e) {
-            System.out.println("JDBC µå¶óÀÌ¹ö ·Îµå ¿¡·¯");
+            System.out.println("JDBC ë“œë¼ì´ë²„ ë¡œë“œ ì—ëŸ¬");
         }
         catch (SQLException e) {
-            System.out.println("DB ¿¬°á ¿À·ù: editPassword");
+            System.out.println("DB ì—°ê²° ì˜¤ë¥˜: editPassword");
         }
     }
 
-    // È¸¿øÀ» »èÁ¦ÇÏ´Â ¸Ş¼Òµå
+    // íšŒì›ì„ ì‚­ì œí•˜ëŠ” ë©”ì†Œë“œ
     public void deleteMember(String id) {
-    	// µ¥ÀÌÅÍº£ÀÌ½º Á¢±Ù
+    	// ë°ì´í„°ë² ì´ìŠ¤ ì ‘ê·¼
         try {
-            // DB ¿¬°á
-            url = "jdbc:mysql://localhost:3306/member?serverTimezone=UTC";	// 'member' DB·Î Á¢¼ÓÇÏ´Â URL
-            Class.forName("com.mysql.cj.jdbc.Driver");						// JDBCµå¶óÀÌ¹ö ·Îµå
-            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);	// µ¥ÀÌÅÍº£ÀÌ½º¿Í ¿¬°á
-            System.out.println("DB ¿¬°á ¿Ï·á: deleteMember");					// DB ¿¬°á ¼º°ø ¿©ºÎ¸¦ ÄÜ¼Ö Ã¢¿¡ Ãâ·Â
+            // DB ì—°ê²°
+            url = "jdbc:mysql://localhost:3306/member?serverTimezone=UTC";	// 'member' DBë¡œ ì ‘ì†í•˜ëŠ” URL
+            Class.forName("com.mysql.cj.jdbc.Driver");						// JDBCë“œë¼ì´ë²„ ë¡œë“œ
+            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);	// ë°ì´í„°ë² ì´ìŠ¤ì™€ ì—°ê²°
+            System.out.println("DB ì—°ê²° ì™„ë£Œ: deleteMember");					// DB ì—°ê²° ì„±ê³µ ì—¬ë¶€ë¥¼ ì½˜ì†” ì°½ì— ì¶œë ¥
 
-            // SQL ¸í·É¹®À» °¡Áö´Â º¯¼ö »ı¼º
+            // SQL ëª…ë ¹ë¬¸ì„ ê°€ì§€ëŠ” ë³€ìˆ˜ ìƒì„±
             String sql1 = "delete from user_list where id = '" + id + "'";
             String sql2 = "drop database " + id + "_db";
 
-            // Statement °´Ã¼ »ı¼º
+            // Statement ê°ì²´ ìƒì„±
             stmt = conn.createStatement();
 
-            // SQL ¸í·É¹® ½ÇÇà
-            stmt.executeUpdate(sql1);	// ·Î±×ÀÎÇÑ ID¿¡ ÇØ´çÇÏ´Â È¸¿øÀ» 'user_list' Table¿¡¼­ »èÁ¦
-            stmt.executeUpdate(sql2);	// ·Î±×ÀÎÇÑ ID¿¡ ÇØ´çÇÏ´Â È¸¿ø °³ÀÎ DB¸¦ »èÁ¦
-            System.out.println("À¯Àú '" + id + "': È¸¿øÅ»Åğ ¿Ï·á");
+            // SQL ëª…ë ¹ë¬¸ ì‹¤í–‰
+            stmt.executeUpdate(sql1);	// ë¡œê·¸ì¸í•œ IDì— í•´ë‹¹í•˜ëŠ” íšŒì›ì„ 'user_list' Tableì—ì„œ ì‚­ì œ
+            stmt.executeUpdate(sql2);	// ë¡œê·¸ì¸í•œ IDì— í•´ë‹¹í•˜ëŠ” íšŒì› ê°œì¸ DBë¥¼ ì‚­ì œ
+            System.out.println("ìœ ì € '" + id + "': íšŒì›íƒˆí‡´ ì™„ë£Œ");
             
-            // ¿¬°á ÇØÁ¦(»ç¿ëµÈ ÀÚ¿øÀ» ¹İÈ¯)
+            // ì—°ê²° í•´ì œ(ì‚¬ìš©ëœ ìì›ì„ ë°˜í™˜)
             stmt.close();
             conn.close();
         }
         catch (ClassNotFoundException e) {
-            System.out.println("JDBC µå¶óÀÌ¹ö ·Îµå ¿¡·¯");
+            System.out.println("JDBC ë“œë¼ì´ë²„ ë¡œë“œ ì—ëŸ¬");
         }
         catch (SQLException e) {
-            System.out.println("DB ¿¬°á ¿À·ù: deleteMember");
+            System.out.println("DB ì—°ê²° ì˜¤ë¥˜: deleteMember");
         }
     }
 
-    // »õ·Î¿î ³ëÆ®¸¦ Ãß°¡ÇÏ´Â ¸Ş¼Òµå
+    // ìƒˆë¡œìš´ ë…¸íŠ¸ë¥¼ ì¶”ê°€í•˜ëŠ” ë©”ì†Œë“œ
     public void addNote(String id, String note_name) {
-    	// µ¥ÀÌÅÍº£ÀÌ½º Á¢±Ù
+    	// ë°ì´í„°ë² ì´ìŠ¤ ì ‘ê·¼
         try {
-            // DB ¿¬°á
-            url = "jdbc:mysql://localhost:3306/" + id + "_db?serverTimezone=UTC";	// È¸¿ø °³ÀÎ DB·Î Á¢¼ÓÇÏ´Â URL
-            Class.forName("com.mysql.cj.jdbc.Driver");								// JDBCµå¶óÀÌ¹ö ·Îµå
-            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);			// µ¥ÀÌÅÍº£ÀÌ½º¿Í ¿¬°á
-            System.out.println("DB ¿¬°á ¿Ï·á: addNote");								// DB ¿¬°á ¼º°ø ¿©ºÎ¸¦ ÄÜ¼Ö Ã¢¿¡ Ãâ·Â
+            // DB ì—°ê²°
+            url = "jdbc:mysql://localhost:3306/" + id + "_db?serverTimezone=UTC";	// íšŒì› ê°œì¸ DBë¡œ ì ‘ì†í•˜ëŠ” URL
+            Class.forName("com.mysql.cj.jdbc.Driver");								// JDBCë“œë¼ì´ë²„ ë¡œë“œ
+            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);			// ë°ì´í„°ë² ì´ìŠ¤ì™€ ì—°ê²°
+            System.out.println("DB ì—°ê²° ì™„ë£Œ: addNote");								// DB ì—°ê²° ì„±ê³µ ì—¬ë¶€ë¥¼ ì½˜ì†” ì°½ì— ì¶œë ¥
             
-            // SQL ¸í·É¹®À» °¡Áö´Â º¯¼ö »ı¼º
+            // SQL ëª…ë ¹ë¬¸ì„ ê°€ì§€ëŠ” ë³€ìˆ˜ ìƒì„±
             String sql1 = "CREATE TABLE `" + note_name + "` ("
-            			 + "id INT AUTO_INCREMENT PRIMARY KEY," // ¿¬¹ø
-            			 + "word VARCHAR(255)," 				// ´Ü¾î
-            			 + "mean VARCHAR(255)," 				// ¶æ
-            			 + "pos VARCHAR(50)" 					// Ç°»ç
+            			 + "id INT AUTO_INCREMENT PRIMARY KEY," // ì—°ë²ˆ
+            			 + "word VARCHAR(255)," 				// ë‹¨ì–´
+            			 + "mean VARCHAR(255)," 				// ëœ»
+            			 + "pos VARCHAR(50)" 					// í’ˆì‚¬
             			 + ")";
             String sql2 = "insert into note_list (name) values ('" + note_name + "')";
             
-            // Statement °´Ã¼ »ı¼º
+            // Statement ê°ì²´ ìƒì„±
             stmt = conn.createStatement();
             
-            // SQL ¸í·É¹® ½ÇÇà
-            stmt.executeUpdate(sql1);	// »õ ³ëÆ®ÀÇ ÀÌ¸§À¸·Î »õ·Î¿î Table »ı¼º
-            System.out.println("³ëÆ® '" + note_name + "': Table »ı¼º ¿Ï·á");
-            stmt.executeUpdate(sql2);	// »õ ³ëÆ®ÀÇ ÀÌ¸§À» 'note_list' Table¿¡ »ğÀÔ
-            System.out.println("Table 'note_list': '" + note_name + "' »ğÀÔ ¿Ï·á");
+            // SQL ëª…ë ¹ë¬¸ ì‹¤í–‰
+            stmt.executeUpdate(sql1);	// ìƒˆ ë…¸íŠ¸ì˜ ì´ë¦„ìœ¼ë¡œ ìƒˆë¡œìš´ Table ìƒì„±
+            System.out.println("ë…¸íŠ¸ '" + note_name + "': Table ìƒì„± ì™„ë£Œ");
+            stmt.executeUpdate(sql2);	// ìƒˆ ë…¸íŠ¸ì˜ ì´ë¦„ì„ 'note_list' Tableì— ì‚½ì…
+            System.out.println("Table 'note_list': '" + note_name + "' ì‚½ì… ì™„ë£Œ");
 
-            // ¿¬°á ÇØÁ¦(»ç¿ëµÈ ÀÚ¿øÀ» ¹İÈ¯)
+            // ì—°ê²° í•´ì œ(ì‚¬ìš©ëœ ìì›ì„ ë°˜í™˜)
             stmt.close();
             conn.close();
         }
         catch (ClassNotFoundException e) {
-            System.out.println("JDBC µå¶óÀÌ¹ö ·Îµå ¿¡·¯");
+            System.out.println("JDBC ë“œë¼ì´ë²„ ë¡œë“œ ì—ëŸ¬");
         }
         catch (SQLException e) {
-            System.out.println("DB ¿¬°á ¿À·ù: addNote");
+            System.out.println("DB ì—°ê²° ì˜¤ë¥˜: addNote");
         }
     }
     
-    // ³ëÆ® ¸ñ·ÏÀ» Á¶È¸ÇÏ´Â ¸Ş¼Òµå
+    // ë…¸íŠ¸ ëª©ë¡ì„ ì¡°íšŒí•˜ëŠ” ë©”ì†Œë“œ
     public String selectNoteList(String id) {
-    	// µ¥ÀÌÅÍº£ÀÌ½º Á¢±Ù
+    	// ë°ì´í„°ë² ì´ìŠ¤ ì ‘ê·¼
         try {
-            // DB ¿¬°á
-            url = "jdbc:mysql://localhost:3306/" + id + "_db?serverTimezone=UTC";	// È¸¿ø °³ÀÎ DB·Î Á¢¼ÓÇÏ´Â URL
-            Class.forName("com.mysql.cj.jdbc.Driver");								// JDBCµå¶óÀÌ¹ö ·Îµå
-            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);			// µ¥ÀÌÅÍº£ÀÌ½º¿Í ¿¬°á
-            System.out.println("DB ¿¬°á ¿Ï·á: selectNoteList");						// DB ¿¬°á ¼º°ø ¿©ºÎ¸¦ ÄÜ¼Ö Ã¢¿¡ Ãâ·Â
+            // DB ì—°ê²°
+            url = "jdbc:mysql://localhost:3306/" + id + "_db?serverTimezone=UTC";	// íšŒì› ê°œì¸ DBë¡œ ì ‘ì†í•˜ëŠ” URL
+            Class.forName("com.mysql.cj.jdbc.Driver");								// JDBCë“œë¼ì´ë²„ ë¡œë“œ
+            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);			// ë°ì´í„°ë² ì´ìŠ¤ì™€ ì—°ê²°
+            System.out.println("DB ì—°ê²° ì™„ë£Œ: selectNoteList");						// DB ì—°ê²° ì„±ê³µ ì—¬ë¶€ë¥¼ ì½˜ì†” ì°½ì— ì¶œë ¥
 
-            // SQL ¸í·É¹®À» °¡Áö´Â º¯¼ö »ı¼º
+            // SQL ëª…ë ¹ë¬¸ì„ ê°€ì§€ëŠ” ë³€ìˆ˜ ìƒì„±
             String sql = "select name from note_list";
 
-            // Statement °´Ã¼ »ı¼º
+            // Statement ê°ì²´ ìƒì„±
             stmt = conn.createStatement();
             
-            // SQL ¸í·É¹® ½ÇÇà ¹× °á°ú °ª Ã³¸®
-            result = stmt.executeQuery(sql);				// ·Î±×ÀÎÇÑ È¸¿øÀÌ Ãß°¡ÇÑ ¸ğµç ³ëÆ®ÀÇ ÀÌ¸§À» Á¶È¸
-            String note = null;								// ¸ğµç ³ëÆ®ÀÇ ÀÌ¸§À» ÀúÀåÇÒ º¯¼ö »ı¼º
-            if (result.next()) {								// DB¿¡ ³ëÆ®°¡ ÀÖ´Ù¸é..
-                note = result.getString("name");					// note¿¡ ³ëÆ® ÀÌ¸§À» Ãß°¡
-                while (result.next()) {								// °á°úÀÇ µÎ ¹øÂ° ÇàºÎÅÍ ¸¶Áö¸· Çà±îÁö..
-                    note = note + "|" + result.getString("name");		// °¢ ³ëÆ®ÀÇ ÀÌ¸§À» '|'·Î ±¸ºĞÇÏ¿© note¿¡ Ãß°¡
+            // SQL ëª…ë ¹ë¬¸ ì‹¤í–‰ ë° ê²°ê³¼ ê°’ ì²˜ë¦¬
+            result = stmt.executeQuery(sql);				// ë¡œê·¸ì¸í•œ íšŒì›ì´ ì¶”ê°€í•œ ëª¨ë“  ë…¸íŠ¸ì˜ ì´ë¦„ì„ ì¡°íšŒ
+            String note = null;								// ëª¨ë“  ë…¸íŠ¸ì˜ ì´ë¦„ì„ ì €ì¥í•  ë³€ìˆ˜ ìƒì„±
+            if (result.next()) {								// DBì— ë…¸íŠ¸ê°€ ìˆë‹¤ë©´..
+                note = result.getString("name");					// noteì— ë…¸íŠ¸ ì´ë¦„ì„ ì¶”ê°€
+                while (result.next()) {								// ê²°ê³¼ì˜ ë‘ ë²ˆì§¸ í–‰ë¶€í„° ë§ˆì§€ë§‰ í–‰ê¹Œì§€..
+                    note = note + "|" + result.getString("name");		// ê° ë…¸íŠ¸ì˜ ì´ë¦„ì„ '|'ë¡œ êµ¬ë¶„í•˜ì—¬ noteì— ì¶”ê°€
                 }
             }
 
-            // ¿¬°á ÇØÁ¦(»ç¿ëµÈ ÀÚ¿øÀ» ¹İÈ¯)
+            // ì—°ê²° í•´ì œ(ì‚¬ìš©ëœ ìì›ì„ ë°˜í™˜)
             result.close();
             stmt.close();
             conn.close();
             
-            // ¸ğµç ³ëÆ®ÀÇ ÀÌ¸§À» °¡Áö´Â ¹®ÀÚ¿­ º¯¼ö note¸¦ ¹İÈ¯
+            // ëª¨ë“  ë…¸íŠ¸ì˜ ì´ë¦„ì„ ê°€ì§€ëŠ” ë¬¸ìì—´ ë³€ìˆ˜ noteë¥¼ ë°˜í™˜
             return note;  //t|tt
         }
         catch (ClassNotFoundException e) {
-            System.out.println("JDBC µå¶óÀÌ¹ö ·Îµå ¿¡·¯");
+            System.out.println("JDBC ë“œë¼ì´ë²„ ë¡œë“œ ì—ëŸ¬");
             return null;
         }
         catch (SQLException e) {
-            System.out.println("DB ¿¬°á ¿À·ù: selectNoteList");
+            System.out.println("DB ì—°ê²° ì˜¤ë¥˜: selectNoteList");
             return null;
         }
     }
     
-    // ³ëÆ®ÀÇ Çà °³¼ö¸¦ Á¶È¸ÇÏ´Â ¸Ş¼Òµå
+    // ë…¸íŠ¸ì˜ í–‰ ê°œìˆ˜ë¥¼ ì¡°íšŒí•˜ëŠ” ë©”ì†Œë“œ
     public int getNoteSize(String id, String noteName) {
-    	// ¸®ÅÏÇÒ º¯¼ö »ı¼º
+    	// ë¦¬í„´í•  ë³€ìˆ˜ ìƒì„±
         int rowCount = 0;
         
-        // µ¥ÀÌÅÍº£ÀÌ½º Á¢±Ù
+        // ë°ì´í„°ë² ì´ìŠ¤ ì ‘ê·¼
         try {
-            // DB ¿¬°á
-            url = "jdbc:mysql://localhost:3306/" + id + "_db?serverTimezone=UTC";	// È¸¿ø °³ÀÎ DB·Î Á¢¼ÓÇÏ´Â URL
-            Class.forName("com.mysql.cj.jdbc.Driver");								// JDBCµå¶óÀÌ¹ö ·Îµå
-            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);			// µ¥ÀÌÅÍº£ÀÌ½º¿Í ¿¬°á
-            System.out.println("DB ¿¬°á ¿Ï·á: getNoteSize");							// DB ¿¬°á ¼º°ø ¿©ºÎ¸¦ ÄÜ¼Ö Ã¢¿¡ Ãâ·Â
+            // DB ì—°ê²°
+            url = "jdbc:mysql://localhost:3306/" + id + "_db?serverTimezone=UTC";	// íšŒì› ê°œì¸ DBë¡œ ì ‘ì†í•˜ëŠ” URL
+            Class.forName("com.mysql.cj.jdbc.Driver");								// JDBCë“œë¼ì´ë²„ ë¡œë“œ
+            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);			// ë°ì´í„°ë² ì´ìŠ¤ì™€ ì—°ê²°
+            System.out.println("DB ì—°ê²° ì™„ë£Œ: getNoteSize");							// DB ì—°ê²° ì„±ê³µ ì—¬ë¶€ë¥¼ ì½˜ì†” ì°½ì— ì¶œë ¥
             
-            // SQL ¸í·É¹®À» °¡Áö´Â º¯¼ö »ı¼º
+            // SQL ëª…ë ¹ë¬¸ì„ ê°€ì§€ëŠ” ë³€ìˆ˜ ìƒì„±
             String Query="select count(*) from `" + noteName+"`";
             
-            // Statement °´Ã¼ »ı¼º
+            // Statement ê°ì²´ ìƒì„±
             stmt = conn.createStatement();
             
-            // SQL ¸í·É¹® ½ÇÇà ¹× °á°ú °ª Ã³¸®
-            result = stmt.executeQuery(Query);	// Å×ÀÌºí ÇàÀÇ °¹¼ö ¹İÈ¯
+            // SQL ëª…ë ¹ë¬¸ ì‹¤í–‰ ë° ê²°ê³¼ ê°’ ì²˜ë¦¬
+            result = stmt.executeQuery(Query);	// í…Œì´ë¸” í–‰ì˜ ê°¯ìˆ˜ ë°˜í™˜
             if (result.next()) {
                 rowCount = result.getInt(1);
-                System.out.println(noteName + "ÀÇ ÇàÀÇ °¹¼ö: " + rowCount);
+                System.out.println(noteName + "ì˜ í–‰ì˜ ê°¯ìˆ˜: " + rowCount);
             }
 
-            // ¿¬°á ÇØÁ¦(»ç¿ëµÈ ÀÚ¿øÀ» ¹İÈ¯)
+            // ì—°ê²° í•´ì œ(ì‚¬ìš©ëœ ìì›ì„ ë°˜í™˜)
             result.close();
             stmt.close();
             conn.close();
         }
         catch (ClassNotFoundException e) {
-            System.out.println("JDBC µå¶óÀÌ¹ö ·Îµå ¿¡·¯");
+            System.out.println("JDBC ë“œë¼ì´ë²„ ë¡œë“œ ì—ëŸ¬");
         }
         catch (SQLException e) {
-            System.out.println("DB ¿¬°á ¿À·ù: getNoteSize");
+            System.out.println("DB ì—°ê²° ì˜¤ë¥˜: getNoteSize");
         }
         
-        // °á°ú °ª ¸®ÅÏ
+        // ê²°ê³¼ ê°’ ë¦¬í„´
         return rowCount;
     }
     
-    // ³ëÆ®¸¦ »èÁ¦ÇÏ´Â ¸Ş¼Òµå
+    // ë…¸íŠ¸ë¥¼ ì‚­ì œí•˜ëŠ” ë©”ì†Œë“œ
     public void deleteNote(String id, String note_Name) {
-    	// µ¥ÀÌÅÍº£ÀÌ½º Á¢±Ù
+    	// ë°ì´í„°ë² ì´ìŠ¤ ì ‘ê·¼
         try {
-            // DB ¿¬°á
-            url = "jdbc:mysql://localhost:3306/" + id + "_db?serverTimezone=UTC";	// È¸¿ø °³ÀÎ DB·Î Á¢¼ÓÇÏ´Â URL
-            Class.forName("com.mysql.cj.jdbc.Driver");								// JDBCµå¶óÀÌ¹ö ·Îµå
-            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);			// µ¥ÀÌÅÍº£ÀÌ½º¿Í ¿¬°á
-            System.out.println("DB ¿¬°á ¿Ï·á: deleteNote");							// DB ¿¬°á ¼º°ø ¿©ºÎ¸¦ ÄÜ¼Ö Ã¢¿¡ Ãâ·Â
+            // DB ì—°ê²°
+            url = "jdbc:mysql://localhost:3306/" + id + "_db?serverTimezone=UTC";	// íšŒì› ê°œì¸ DBë¡œ ì ‘ì†í•˜ëŠ” URL
+            Class.forName("com.mysql.cj.jdbc.Driver");								// JDBCë“œë¼ì´ë²„ ë¡œë“œ
+            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);			// ë°ì´í„°ë² ì´ìŠ¤ì™€ ì—°ê²°
+            System.out.println("DB ì—°ê²° ì™„ë£Œ: deleteNote");							// DB ì—°ê²° ì„±ê³µ ì—¬ë¶€ë¥¼ ì½˜ì†” ì°½ì— ì¶œë ¥
             
-            // SQL ¸í·É¹®À» °¡Áö´Â º¯¼ö »ı¼º
+            // SQL ëª…ë ¹ë¬¸ì„ ê°€ì§€ëŠ” ë³€ìˆ˜ ìƒì„±
             String sql1 = "DROP TABLE `" + note_Name + "`";
             String sql2 = "delete from note_list where name = '" + note_Name + "';";
             
-            // Statement °´Ã¼ »ı¼º
+            // Statement ê°ì²´ ìƒì„±
             stmt = conn.createStatement();
             
-            // SQL ¸í·É¹® ½ÇÇà
-            stmt.executeUpdate(sql1);	// ÇØ´ç ³ëÆ® TableÀ» »èÁ¦
+            // SQL ëª…ë ¹ë¬¸ ì‹¤í–‰
+            stmt.executeUpdate(sql1);	// í•´ë‹¹ ë…¸íŠ¸ Tableì„ ì‚­ì œ
             System.out.println("Delete Table: "+note_Name);
-            stmt.executeUpdate(sql2);	// 'note_list' Å×ÀÌºí¿¡¼­ ÇØ´ç ³ëÆ® ÀÌ¸§À» »èÁ¦
+            stmt.executeUpdate(sql2);	// 'note_list' í…Œì´ë¸”ì—ì„œ í•´ë‹¹ ë…¸íŠ¸ ì´ë¦„ì„ ì‚­ì œ
 
-            // ¿¬°á ÇØÁ¦(»ç¿ëµÈ ÀÚ¿øÀ» ¹İÈ¯)
+            // ì—°ê²° í•´ì œ(ì‚¬ìš©ëœ ìì›ì„ ë°˜í™˜)
             stmt.close();
             conn.close();
         }
         catch (ClassNotFoundException e) {
-            System.out.println("JDBC µå¶óÀÌ¹ö ·Îµå ¿¡·¯");
+            System.out.println("JDBC ë“œë¼ì´ë²„ ë¡œë“œ ì—ëŸ¬");
         }
         catch (SQLException e) {
-            System.out.println("DB ¿¬°á ¿À·ù: deleteNote");
+            System.out.println("DB ì—°ê²° ì˜¤ë¥˜: deleteNote");
         }
     }
     
-    // »õ·Î¿î ¿µ´Ü¾î¸¦ ³ëÆ®¿¡ Ãß°¡ÇÏ´Â ¸Ş¼Òµå
+    // ìƒˆë¡œìš´ ì˜ë‹¨ì–´ë¥¼ ë…¸íŠ¸ì— ì¶”ê°€í•˜ëŠ” ë©”ì†Œë“œ
     public void insertWord(String id, String note_name, String word, String mean, List<String> pos) {
-    	// µ¥ÀÌÅÍº£ÀÌ½º Á¢±Ù
+    	// ë°ì´í„°ë² ì´ìŠ¤ ì ‘ê·¼
     	try {
-            // DB ¿¬°á
-            url = "jdbc:mysql://localhost:3306/" + id + "_db?serverTimezone=UTC";	// È¸¿ø °³ÀÎ DB·Î Á¢¼ÓÇÏ´Â URL
-            Class.forName("com.mysql.cj.jdbc.Driver");								// JDBCµå¶óÀÌ¹ö ·Îµå
-            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);			// µ¥ÀÌÅÍº£ÀÌ½º¿Í ¿¬°á
-            System.out.println("DB ¿¬°á ¿Ï·á: insertWord");							// DB ¿¬°á ¼º°ø ¿©ºÎ¸¦ ÄÜ¼Ö Ã¢¿¡ Ãâ·Â
+            // DB ì—°ê²°
+            url = "jdbc:mysql://localhost:3306/" + id + "_db?serverTimezone=UTC";	// íšŒì› ê°œì¸ DBë¡œ ì ‘ì†í•˜ëŠ” URL
+            Class.forName("com.mysql.cj.jdbc.Driver");								// JDBCë“œë¼ì´ë²„ ë¡œë“œ
+            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);			// ë°ì´í„°ë² ì´ìŠ¤ì™€ ì—°ê²°
+            System.out.println("DB ì—°ê²° ì™„ë£Œ: insertWord");							// DB ì—°ê²° ì„±ê³µ ì—¬ë¶€ë¥¼ ì½˜ì†” ì°½ì— ì¶œë ¥
             
-            // SQL ¸í·É¹®À» °¡Áö´Â º¯¼ö »ı¼º
+            // SQL ëª…ë ¹ë¬¸ì„ ê°€ì§€ëŠ” ë³€ìˆ˜ ìƒì„±
             String sql = "INSERT INTO `" + note_name + "` (word, mean, pos)"
             			 + "VALUES ('" + word + "', '" + mean + "','" + pos + "')";
             
-            // Statement °´Ã¼ »ı¼º
+            // Statement ê°ì²´ ìƒì„±
             stmt = conn.createStatement();
             
-            // SQL ¸í·É¹® ½ÇÇà
-            stmt.execute(sql);	// ÇØ´ç ³ëÆ® Table¿¡ »õ·Î¿î ´Ü¾î, ¶æ, Ç°»ç¸¦ Ãß°¡
-            System.out.println("Table '" + note_name + "': »õ ¿µ´Ü¾î »ğÀÔ ¿Ï·á");
+            // SQL ëª…ë ¹ë¬¸ ì‹¤í–‰
+            stmt.execute(sql);	// í•´ë‹¹ ë…¸íŠ¸ Tableì— ìƒˆë¡œìš´ ë‹¨ì–´, ëœ», í’ˆì‚¬ë¥¼ ì¶”ê°€
+            System.out.println("Table '" + note_name + "': ìƒˆ ì˜ë‹¨ì–´ ì‚½ì… ì™„ë£Œ");
             
-            // ¿¬°á ÇØÁ¦(»ç¿ëµÈ ÀÚ¿øÀ» ¹İÈ¯)
+            // ì—°ê²° í•´ì œ(ì‚¬ìš©ëœ ìì›ì„ ë°˜í™˜)
             stmt.close();
             conn.close();
     	}
         catch (ClassNotFoundException e) {
-            System.out.println("JDBC µå¶óÀÌ¹ö ·Îµå ¿¡·¯");
+            System.out.println("JDBC ë“œë¼ì´ë²„ ë¡œë“œ ì—ëŸ¬");
         }
         catch (SQLException e) {
-            System.out.println("DB ¿¬°á ¿À·ù: insertWord");
+            System.out.println("DB ì—°ê²° ì˜¤ë¥˜: insertWord");
         }
     }
     
-    // ÇØ´ç ³ëÆ®¿¡ Ãß°¡µÈ ¸ğµç ¿µ´Ü¾î¸¦ Á¶È¸ÇÏ´Â ¸Ş¼Òµå
+    // í•´ë‹¹ ë…¸íŠ¸ì— ì¶”ê°€ëœ ëª¨ë“  ì˜ë‹¨ì–´ë¥¼ ì¡°íšŒí•˜ëŠ” ë©”ì†Œë“œ
     public String[][] lookEnglish(String id, String note_name) {
-    	// µ¥ÀÌÅÍº£ÀÌ½º Á¢±Ù
+    	// ë°ì´í„°ë² ì´ìŠ¤ ì ‘ê·¼
         try {
-            // DB ¿¬°á
-            url = "jdbc:mysql://localhost:3306/" + id + "_db?serverTimezone=UTC";	// È¸¿ø °³ÀÎ DB·Î Á¢¼ÓÇÏ´Â URL
-            Class.forName("com.mysql.cj.jdbc.Driver");								// JDBCµå¶óÀÌ¹ö ·Îµå
-            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);			// µ¥ÀÌÅÍº£ÀÌ½º¿Í ¿¬°á
-            System.out.println("DB ¿¬°á ¿Ï·á: lookEnglish");							// DB ¿¬°á ¼º°ø ¿©ºÎ¸¦ ÄÜ¼Ö Ã¢¿¡ Ãâ·Â
+            // DB ì—°ê²°
+            url = "jdbc:mysql://localhost:3306/" + id + "_db?serverTimezone=UTC";	// íšŒì› ê°œì¸ DBë¡œ ì ‘ì†í•˜ëŠ” URL
+            Class.forName("com.mysql.cj.jdbc.Driver");								// JDBCë“œë¼ì´ë²„ ë¡œë“œ
+            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);			// ë°ì´í„°ë² ì´ìŠ¤ì™€ ì—°ê²°
+            System.out.println("DB ì—°ê²° ì™„ë£Œ: lookEnglish");							// DB ì—°ê²° ì„±ê³µ ì—¬ë¶€ë¥¼ ì½˜ì†” ì°½ì— ì¶œë ¥
 
-            // SQL ¸í·É¹®À» °¡Áö´Â º¯¼ö »ı¼º
+            // SQL ëª…ë ¹ë¬¸ì„ ê°€ì§€ëŠ” ë³€ìˆ˜ ìƒì„±
             String sql1 = "select count(*) from `" + note_name +"`";
             String sql2 = "select * from `" + note_name + "`";
 
-            // Statement °´Ã¼ »ı¼º
+            // Statement ê°ì²´ ìƒì„±
             stmt = conn.createStatement();
 
-            // SQL ¸í·É¹® ½ÇÇà ¹× °á°ú °ª Ã³¸®
-            result = stmt.executeQuery(sql1);	// ³ëÆ®¿¡ ÀÖ´Â ¿µ´Ü¾îÀÇ °³¼ö¸¦ Á¶È¸
-            result.next();						// Ä¿¼­¸¦ ´ÙÀ½ ÇàÀ¸·Î ÀÌµ¿
-            int count = result.getInt(1);		// ¿µ´Ü¾îÀÇ °³¼ö¸¦ count¿¡ ÀúÀå
-            String[][] english;					// ¸ğµç ´Ü¾î, ¶æ, Ç°»ç¸¦ ÀúÀåÇÒ 2Â÷¿ø ¹è¿­ ¼±¾ğ
-            if (count > 0) {					// ³ëÆ®¿¡ ¿µ´Ü¾î°¡ ÀÖ´Ù¸é..
-                english = new String[count][3];		// count*3¸¸Å­ÀÇ Å©±â¸¦ °¡Áö´Â 2Â÷¿ø ¹è¿­ »ı¼º
-                result = stmt.executeQuery(sql2);	// ³ëÆ®¿¡ ÀÖ´Â ¸ğµç ´Ü¾î, ¶æ, Ç°»ç¸¦ Á¶È¸
+            // SQL ëª…ë ¹ë¬¸ ì‹¤í–‰ ë° ê²°ê³¼ ê°’ ì²˜ë¦¬
+            result = stmt.executeQuery(sql1);	// ë…¸íŠ¸ì— ìˆëŠ” ì˜ë‹¨ì–´ì˜ ê°œìˆ˜ë¥¼ ì¡°íšŒ
+            result.next();						// ì»¤ì„œë¥¼ ë‹¤ìŒ í–‰ìœ¼ë¡œ ì´ë™
+            int count = result.getInt(1);		// ì˜ë‹¨ì–´ì˜ ê°œìˆ˜ë¥¼ countì— ì €ì¥
+            String[][] english;					// ëª¨ë“  ë‹¨ì–´, ëœ», í’ˆì‚¬ë¥¼ ì €ì¥í•  2ì°¨ì› ë°°ì—´ ì„ ì–¸
+            if (count > 0) {					// ë…¸íŠ¸ì— ì˜ë‹¨ì–´ê°€ ìˆë‹¤ë©´..
+                english = new String[count][3];		// count*3ë§Œí¼ì˜ í¬ê¸°ë¥¼ ê°€ì§€ëŠ” 2ì°¨ì› ë°°ì—´ ìƒì„±
+                result = stmt.executeQuery(sql2);	// ë…¸íŠ¸ì— ìˆëŠ” ëª¨ë“  ë‹¨ì–´, ëœ», í’ˆì‚¬ë¥¼ ì¡°íšŒ
                 for (int i=0; i<count; i++) {
-                    result.next();						// Ä¿¼­¸¦ ´ÙÀ½ ÇàÀ¸·Î ÀÌµ¿
+                    result.next();						// ì»¤ì„œë¥¼ ë‹¤ìŒ í–‰ìœ¼ë¡œ ì´ë™
                     for (int j=0; j<3; j++) {
-                        english[i][j] = result.getString(j+2);	// °á°úÀÇ ÀÎµ¦½º ¹øÈ£¸¦ ÀÌ¿ëÇÏ¿© ÄÃ·³ °ªÀ» ÀúÀå
+                        english[i][j] = result.getString(j+2);	// ê²°ê³¼ì˜ ì¸ë±ìŠ¤ ë²ˆí˜¸ë¥¼ ì´ìš©í•˜ì—¬ ì»¬ëŸ¼ ê°’ì„ ì €ì¥
                     }
                 }
             }
-            else {								// ³ëÆ®¿¡ ´Ü¾î°¡ ¾ø´Ù¸é..
-                english = null;						// 2Â÷¿ø ¹è¿­ english¸¦ »ı¼ºÇÏÁö ¾ÊÀ½
+            else {								// ë…¸íŠ¸ì— ë‹¨ì–´ê°€ ì—†ë‹¤ë©´..
+                english = null;						// 2ì°¨ì› ë°°ì—´ englishë¥¼ ìƒì„±í•˜ì§€ ì•ŠìŒ
             }
 
-            // ¿¬°á ÇØÁ¦(»ç¿ëµÈ ÀÚ¿øÀ» ¹İÈ¯)
+            // ì—°ê²° í•´ì œ(ì‚¬ìš©ëœ ìì›ì„ ë°˜í™˜)
             result.close();
             stmt.close();
             conn.close();
 
-            // ¸ğµç ´Ü¾î, ¶æ, Ç°»ç¸¦ °¡Áö´Â english¸¦ ¹İÈ¯
+            // ëª¨ë“  ë‹¨ì–´, ëœ», í’ˆì‚¬ë¥¼ ê°€ì§€ëŠ” englishë¥¼ ë°˜í™˜
             return english;
         }
         catch (ClassNotFoundException e) {
-            System.out.println("JDBC µå¶óÀÌ¹ö ·Îµå ¿¡·¯");
+            System.out.println("JDBC ë“œë¼ì´ë²„ ë¡œë“œ ì—ëŸ¬");
             return null;
         }
         catch (SQLException e) {
-            System.out.println("DB ¿¬°á ¿À·ù: lookEnglish");
+            System.out.println("DB ì—°ê²° ì˜¤ë¥˜: lookEnglish");
             return null;
         }
     }
     
-    // ÇØ´ç ³ëÆ®¿¡ Ãß°¡µÈ ¿µ´Ü¾îÀÇ ´Ü¾î¿Í ¶æÀ» Á¶È¸ÇÏ´Â ¸Ş¼Òµå
+    // í•´ë‹¹ ë…¸íŠ¸ì— ì¶”ê°€ëœ ì˜ë‹¨ì–´ì˜ ë‹¨ì–´ì™€ ëœ»ì„ ì¡°íšŒí•˜ëŠ” ë©”ì†Œë“œ
     public String[][] selectWordAndMeaning(String id, String noteName) {
-        // Á¶È¸ÇÑ ´Ü¾î¸¦ ¹Ş±â À§ÇÑ ¹è¿­ ¼±¾ğ
+        // ì¡°íšŒí•œ ë‹¨ì–´ë¥¼ ë°›ê¸° ìœ„í•œ ë°°ì—´ ì„ ì–¸
         String word_list[][];
         
-        // µ¥ÀÌÅÍº£ÀÌ½º Á¢±Ù
+        // ë°ì´í„°ë² ì´ìŠ¤ ì ‘ê·¼
         try {
-            // DB ¿¬°á
-            url = "jdbc:mysql://localhost:3306/" + id + "_db?serverTimezone=UTC";	// È¸¿ø °³ÀÎ DB·Î Á¢¼ÓÇÏ´Â URL
-            Class.forName("com.mysql.cj.jdbc.Driver");								// JDBCµå¶óÀÌ¹ö ·Îµå
-            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);			// µ¥ÀÌÅÍº£ÀÌ½º¿Í ¿¬°á
-            System.out.println("DB ¿¬°á ¿Ï·á: selectWordAndMeaning");					// DB ¿¬°á ¼º°ø ¿©ºÎ¸¦ ÄÜ¼Ö Ã¢¿¡ Ãâ·Â
+            // DB ì—°ê²°
+            url = "jdbc:mysql://localhost:3306/" + id + "_db?serverTimezone=UTC";	// íšŒì› ê°œì¸ DBë¡œ ì ‘ì†í•˜ëŠ” URL
+            Class.forName("com.mysql.cj.jdbc.Driver");								// JDBCë“œë¼ì´ë²„ ë¡œë“œ
+            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);			// ë°ì´í„°ë² ì´ìŠ¤ì™€ ì—°ê²°
+            System.out.println("DB ì—°ê²° ì™„ë£Œ: selectWordAndMeaning");					// DB ì—°ê²° ì„±ê³µ ì—¬ë¶€ë¥¼ ì½˜ì†” ì°½ì— ì¶œë ¥
             
-            // SQL ¸í·É¹®À» °¡Áö´Â º¯¼ö »ı¼º
+            // SQL ëª…ë ¹ë¬¸ì„ ê°€ì§€ëŠ” ë³€ìˆ˜ ìƒì„±
             String sql1 = "select count(*) from `" + noteName +"`";
             String sql2 = "select word, mean from `" + noteName + "`";
             
-            // Statement °´Ã¼ »ı¼º
+            // Statement ê°ì²´ ìƒì„±
             stmt = conn.createStatement();
             
-            // SQL ¸í·É¹® ½ÇÇà ¹× °á°ú °ª Ã³¸®
-            result = stmt.executeQuery(sql1);	// ³ëÆ®¿¡ ÀÖ´Â ¿µ´Ü¾îÀÇ °³¼ö¸¦ Á¶È¸
-            result.next();						// Ä¿¼­¸¦ ´ÙÀ½ ÇàÀ¸·Î ÀÌµ¿
-            int count = result.getInt(1);		// ¿µ´Ü¾îÀÇ °³¼ö¸¦ count¿¡ ÀúÀå
+            // SQL ëª…ë ¹ë¬¸ ì‹¤í–‰ ë° ê²°ê³¼ ê°’ ì²˜ë¦¬
+            result = stmt.executeQuery(sql1);	// ë…¸íŠ¸ì— ìˆëŠ” ì˜ë‹¨ì–´ì˜ ê°œìˆ˜ë¥¼ ì¡°íšŒ
+            result.next();						// ì»¤ì„œë¥¼ ë‹¤ìŒ í–‰ìœ¼ë¡œ ì´ë™
+            int count = result.getInt(1);		// ì˜ë‹¨ì–´ì˜ ê°œìˆ˜ë¥¼ countì— ì €ì¥
 
-            if(count>0) { //´Ü¾î°¡ ÀÖÀ¸¸é...
-                word_list = new String[count][2];	//¿µ´Ü¾î °³¼ö¸¸Å­ ¹è¿­ »ı¼º
+            if(count>0) { //ë‹¨ì–´ê°€ ìˆìœ¼ë©´...
+                word_list = new String[count][2];	//ì˜ë‹¨ì–´ ê°œìˆ˜ë§Œí¼ ë°°ì—´ ìƒì„±
                 
-                result = stmt.executeQuery(sql2);	// ½ÇÇà°á°ú¸¦ ¹İÈ¯ ¹ŞÀ½
+                result = stmt.executeQuery(sql2);	// ì‹¤í–‰ê²°ê³¼ë¥¼ ë°˜í™˜ ë°›ìŒ
                 
                 for (int i=0; i<count; i++) {
-                	result.next();						// Ä¿¼­¸¦ ´ÙÀ½ ÇàÀ¸·Î ÀÌµ¿
+                	result.next();						// ì»¤ì„œë¥¼ ë‹¤ìŒ í–‰ìœ¼ë¡œ ì´ë™
                     for (int j=0; j<2; j++) {
-                        word_list[i][j] = result.getString(j+1);	// °á°úÀÇ ÀÎµ¦½º ¹øÈ£¸¦ ÀÌ¿ëÇÏ¿© ÄÃ·³ °ªÀ» ÀúÀå
+                        word_list[i][j] = result.getString(j+1);	// ê²°ê³¼ì˜ ì¸ë±ìŠ¤ ë²ˆí˜¸ë¥¼ ì´ìš©í•˜ì—¬ ì»¬ëŸ¼ ê°’ì„ ì €ì¥
                     }
                 }
             }
-            else{ //´Ü¾î°¡ ¾øÀ¸¸é...
+            else{ //ë‹¨ì–´ê°€ ì—†ìœ¼ë©´...
                 word_list=null;
             }
             
-            // ¿¬°á ÇØÁ¦(»ç¿ëµÈ ÀÚ¿øÀ» ¹İÈ¯)
+            // ì—°ê²° í•´ì œ(ì‚¬ìš©ëœ ìì›ì„ ë°˜í™˜)
             result.close();
             stmt.close();
             conn.close();
             
-            // ´Ü¾î¿Í ¶æÀ» ÀúÀåÇÑ 2Â÷¿ø ¹è¿­ ¸®ÅÏ
+            // ë‹¨ì–´ì™€ ëœ»ì„ ì €ì¥í•œ 2ì°¨ì› ë°°ì—´ ë¦¬í„´
             return word_list;
         }
         catch (ClassNotFoundException e) {
-            System.out.println("JDBC µå¶óÀÌ¹ö ·Îµå ¿¡·¯");
+            System.out.println("JDBC ë“œë¼ì´ë²„ ë¡œë“œ ì—ëŸ¬");
             return null;
         }
         catch (SQLException e) {
-            System.out.println("DB ¿¬°á ¿À·ù: selectWordAndMeaning");
+            System.out.println("DB ì—°ê²° ì˜¤ë¥˜: selectWordAndMeaning");
             return null;
         }
     }
     
-    // ´Ü¾îÀÇ À§Ä¡¸¦ °Ë»öÇÏ´Â ¸Ş¼Òµå
+    // ë‹¨ì–´ì˜ ìœ„ì¹˜ë¥¼ ê²€ìƒ‰í•˜ëŠ” ë©”ì†Œë“œ
     public String[] searchWord(String id, String search_word) {
-    	// µ¥ÀÌÅÍº£ÀÌ½º Á¢±Ù
+    	// ë°ì´í„°ë² ì´ìŠ¤ ì ‘ê·¼
         try {
-            // DB ¿¬°á
-            url = "jdbc:mysql://localhost:3306/" + id + "_db?serverTimezone=UTC";	// È¸¿ø °³ÀÎ DB·Î Á¢¼ÓÇÏ´Â URL
-            Class.forName("com.mysql.cj.jdbc.Driver");								// JDBCµå¶óÀÌ¹ö ·Îµå
-            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);			// µ¥ÀÌÅÍº£ÀÌ½º¿Í ¿¬°á
-            System.out.println("DB ¿¬°á ¿Ï·á: searchWord");							// DB ¿¬°á ¼º°ø ¿©ºÎ¸¦ ÄÜ¼Ö Ã¢¿¡ Ãâ·Â
+            // DB ì—°ê²°
+            url = "jdbc:mysql://localhost:3306/" + id + "_db?serverTimezone=UTC";	// íšŒì› ê°œì¸ DBë¡œ ì ‘ì†í•˜ëŠ” URL
+            Class.forName("com.mysql.cj.jdbc.Driver");								// JDBCë“œë¼ì´ë²„ ë¡œë“œ
+            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);			// ë°ì´í„°ë² ì´ìŠ¤ì™€ ì—°ê²°
+            System.out.println("DB ì—°ê²° ì™„ë£Œ: searchWord");							// DB ì—°ê²° ì„±ê³µ ì—¬ë¶€ë¥¼ ì½˜ì†” ì°½ì— ì¶œë ¥
 
-            // SQL ¸í·É¹®À» °¡Áö´Â º¯¼ö »ı¼º
+            // SQL ëª…ë ¹ë¬¸ì„ ê°€ì§€ëŠ” ë³€ìˆ˜ ìƒì„±
             String sql = "select name from note_list";
 
-            // Statement °´Ã¼ »ı¼º
+            // Statement ê°ì²´ ìƒì„±
             stmt = conn.createStatement();
 
-            // SQL ¸í·É¹® ½ÇÇà ¹× °á°ú °ª Ã³¸®
-            result = stmt.executeQuery(sql);	// ·Î±×ÀÎÇÑ È¸¿øÀÌ Ãß°¡ÇÑ ¸ğµç ³ëÆ®ÀÇ ÀÌ¸§À» Á¶È¸
+            // SQL ëª…ë ¹ë¬¸ ì‹¤í–‰ ë° ê²°ê³¼ ê°’ ì²˜ë¦¬
+            result = stmt.executeQuery(sql);	// ë¡œê·¸ì¸í•œ íšŒì›ì´ ì¶”ê°€í•œ ëª¨ë“  ë…¸íŠ¸ì˜ ì´ë¦„ì„ ì¡°íšŒ
             
-            String[] word = new String[3];    //[´Ü¾î,¶æ,Ã£Àº ³ëÆ® ÀÌ¸§]¸¦ ¹İÈ¯¹ŞÀ» ¹è¿­
-            ArrayList<String> noteNameList = new ArrayList<String>();	// ¸ğµç ³ëÆ®ÀÇ ÀÌ¸§À» ¹è¿­ ¸®½ºÆ®¿¡ ÀúÀå
-            ArrayList<String> searchedNoteList = new ArrayList<String>();	// Ã£Àº ³ëÆ®¸¦ ¹è¿­ ¸®½ºÆ®¿¡ ÀúÀå
+            String[] word = new String[3];    //[ë‹¨ì–´,ëœ»,ì°¾ì€ ë…¸íŠ¸ ì´ë¦„]ë¥¼ ë°˜í™˜ë°›ì„ ë°°ì—´
+            ArrayList<String> noteNameList = new ArrayList<String>();	// ëª¨ë“  ë…¸íŠ¸ì˜ ì´ë¦„ì„ ë°°ì—´ ë¦¬ìŠ¤íŠ¸ì— ì €ì¥
+            ArrayList<String> searchedNoteList = new ArrayList<String>();	// ì°¾ì€ ë…¸íŠ¸ë¥¼ ë°°ì—´ ë¦¬ìŠ¤íŠ¸ì— ì €ì¥
             
-            while (result.next()) {	// DB¿¡ ³ëÆ®°¡ ÀÖ´Ù¸é, ´ÙÀ½ ÇàÀÌ ÀÖÀ» ¶§±îÁö ¹İº¹
-                noteNameList.add(result.getString("name"));  // ¸ğµç ³ëÆ®¸¦ Å½»öÇÏ±â À§ÇØ noteÀÌ¸§À» ¸®½ºÆ®¿¡ ÀúÀåÇÔ
+            while (result.next()) {	// DBì— ë…¸íŠ¸ê°€ ìˆë‹¤ë©´, ë‹¤ìŒ í–‰ì´ ìˆì„ ë•Œê¹Œì§€ ë°˜ë³µ
+                noteNameList.add(result.getString("name"));  // ëª¨ë“  ë…¸íŠ¸ë¥¼ íƒìƒ‰í•˜ê¸° ìœ„í•´ noteì´ë¦„ì„ ë¦¬ìŠ¤íŠ¸ì— ì €ì¥í•¨
             }
             
-            for (int i = 0; i < noteNameList.size(); i++) {		// ´Ü¾î, ¶æ Á¶È¸ ½ÃÀÛ
+            for (int i = 0; i < noteNameList.size(); i++) {		// ë‹¨ì–´, ëœ» ì¡°íšŒ ì‹œì‘
                 result = stmt.executeQuery("SELECT word, mean FROM `" + noteNameList.get(i) 
-                						   + "` where word = '" + search_word + "'");	//°¢ ³ëÆ®º°·Î ¸ğµç ´Ü¾î Á¶È¸
+                						   + "` where word = '" + search_word + "'");	//ê° ë…¸íŠ¸ë³„ë¡œ ëª¨ë“  ë‹¨ì–´ ì¡°íšŒ
                 while (result.next()) {
-                    word[0] = result.getString("word");	// ÇöÀç ÇàÀÇ word °ª ÀĞ¾î¿À±â
-                    word[1] = result.getString("mean");	// ÇöÀç ÇàÀÇ mean °ª ÀĞ¾î¿À±â
+                    word[0] = result.getString("word");	// í˜„ì¬ í–‰ì˜ word ê°’ ì½ì–´ì˜¤ê¸°
+                    word[1] = result.getString("mean");	// í˜„ì¬ í–‰ì˜ mean ê°’ ì½ì–´ì˜¤ê¸°
                     if(word[0].equals(search_word)) {
-                    	searchedNoteList.add(noteNameList.get(i)); //Ã£Àº ´Ü¾îÀÇ ³ëÆ®¸¦ ÀúÀå
-                        System.out.println(noteNameList.get(i) + "¿¡¼­Ã£Àº ´Ü¾î:" + word[0]); //Ã£Àº ´Ü¾î¸¦ ÄÜ¼Ö Ã¢¿¡ Ãâ·Â
+                    	searchedNoteList.add(noteNameList.get(i)); //ì°¾ì€ ë‹¨ì–´ì˜ ë…¸íŠ¸ë¥¼ ì €ì¥
+                        System.out.println(noteNameList.get(i) + "ì—ì„œì°¾ì€ ë‹¨ì–´:" + word[0]); //ì°¾ì€ ë‹¨ì–´ë¥¼ ì½˜ì†” ì°½ì— ì¶œë ¥
                         break;
                     }
-                    else {            // ¸øÃ£À¸¸é nullÀ» °¡Áø ¹è¿­À» word[null,null]¹İÈ¯ÇÔ
-                        System.out.println(noteNameList.get(i) +"¸øÃ£Àº ´Ü¾î:"+word[0]);  //¸øÃ£À¸¸é null¹İÈ¯µÊ
+                    else {            // ëª»ì°¾ìœ¼ë©´ nullì„ ê°€ì§„ ë°°ì—´ì„ word[null,null]ë°˜í™˜í•¨
+                        System.out.println(noteNameList.get(i) +"ëª»ì°¾ì€ ë‹¨ì–´:"+word[0]);  //ëª»ì°¾ìœ¼ë©´ nullë°˜í™˜ë¨
                     }
                 }
             }
             
-            word[2] = String.join(", ", searchedNoteList);	// Ã£Àº ³ëÆ® ¸ñ·ÏÀ» ÀúÀå
+            word[2] = String.join(", ", searchedNoteList);	// ì°¾ì€ ë…¸íŠ¸ ëª©ë¡ì„ ì €ì¥
             
-            // ¿¬°á ÇØÁ¦(»ç¿ëµÈ ÀÚ¿øÀ» ¹İÈ¯)
+            // ì—°ê²° í•´ì œ(ì‚¬ìš©ëœ ìì›ì„ ë°˜í™˜)
             result.close();
             stmt.close();
             conn.close();
             
-            // word¹è¿­ ¹İÈ¯
+            // wordë°°ì—´ ë°˜í™˜
             return word;
         }
         catch (ClassNotFoundException e) {
-            System.out.println("JDBC µå¶óÀÌ¹ö ·Îµå ¿¡·¯");
+            System.out.println("JDBC ë“œë¼ì´ë²„ ë¡œë“œ ì—ëŸ¬");
             return null;
         }
         catch (SQLException e) {
-            System.out.println("DB ¿¬°á ¿À·ù: searchWord");
+            System.out.println("DB ì—°ê²° ì˜¤ë¥˜: searchWord");
             return null;
         }
     }
     
-    // ¼±ÅÃµÈ ¿µ´Ü¾îµéÀ» ³ëÆ®¿¡¼­ »èÁ¦ÇÏ´Â ¸Ş¼Òµå
+    // ì„ íƒëœ ì˜ë‹¨ì–´ë“¤ì„ ë…¸íŠ¸ì—ì„œ ì‚­ì œí•˜ëŠ” ë©”ì†Œë“œ
     public void deleteWords(String id, String noteName, String word[]) {
-    	// µ¥ÀÌÅÍº£ÀÌ½º Á¢±Ù
+    	// ë°ì´í„°ë² ì´ìŠ¤ ì ‘ê·¼
         try {
-            // DB ¿¬°á
-            url = "jdbc:mysql://localhost:3306/" + id + "_db?serverTimezone=UTC";	// È¸¿ø °³ÀÎ DB·Î Á¢¼ÓÇÏ´Â URL
-            Class.forName("com.mysql.cj.jdbc.Driver");								// JDBCµå¶óÀÌ¹ö ·Îµå
-            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);			// µ¥ÀÌÅÍº£ÀÌ½º¿Í ¿¬°á
-            System.out.println("DB ¿¬°á ¿Ï·á: deleteWords");							// DB ¿¬°á ¼º°ø ¿©ºÎ¸¦ ÄÜ¼Ö Ã¢¿¡ Ãâ·Â
+            // DB ì—°ê²°
+            url = "jdbc:mysql://localhost:3306/" + id + "_db?serverTimezone=UTC";	// íšŒì› ê°œì¸ DBë¡œ ì ‘ì†í•˜ëŠ” URL
+            Class.forName("com.mysql.cj.jdbc.Driver");								// JDBCë“œë¼ì´ë²„ ë¡œë“œ
+            conn = DriverManager.getConnection(url, mysql_id, mysql_pw);			// ë°ì´í„°ë² ì´ìŠ¤ì™€ ì—°ê²°
+            System.out.println("DB ì—°ê²° ì™„ë£Œ: deleteWords");							// DB ì—°ê²° ì„±ê³µ ì—¬ë¶€ë¥¼ ì½˜ì†” ì°½ì— ì¶œë ¥
 
-            // Statement °´Ã¼ »ı¼º
+            // Statement ê°ì²´ ìƒì„±
             stmt = conn.createStatement();
 
-            // SQL ¸í·É¹® ½ÇÇà
+            // SQL ëª…ë ¹ë¬¸ ì‹¤í–‰
             for (int i = 0; i < word.length; i++) {
                 stmt.execute("DELETE FROM `" + noteName 
-                			 + "` WHERE word = '" + word[i] + "'");		// ¼±ÅÃµÈ ¸ğµç ¿µ´Ü¾îµéÀ» ÇØ´ç ³ëÆ® Table¿¡¼­ »èÁ¦ 
+                			 + "` WHERE word = '" + word[i] + "'");		// ì„ íƒëœ ëª¨ë“  ì˜ë‹¨ì–´ë“¤ì„ í•´ë‹¹ ë…¸íŠ¸ Tableì—ì„œ ì‚­ì œ 
             }
 
-            // ¿¬°á ÇØÁ¦(»ç¿ëµÈ ÀÚ¿øÀ» ¹İÈ¯)
+            // ì—°ê²° í•´ì œ(ì‚¬ìš©ëœ ìì›ì„ ë°˜í™˜)
             stmt.close();
             conn.close();
-            System.out.println("´Ü¾î »èÁ¦ ¿Ï·á");
+            System.out.println("ë‹¨ì–´ ì‚­ì œ ì™„ë£Œ");
         }
         catch (ClassNotFoundException e) {
-            System.out.println("JDBC µå¶óÀÌ¹ö ·Îµå ¿¡·¯");
+            System.out.println("JDBC ë“œë¼ì´ë²„ ë¡œë“œ ì—ëŸ¬");
         }
         catch (SQLException e) {
-            System.out.println("DB ¿¬°á ¿À·ù: deleteWords");
+            System.out.println("DB ì—°ê²° ì˜¤ë¥˜: deleteWords");
         }
     }
 }
